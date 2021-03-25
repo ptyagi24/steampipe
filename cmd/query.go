@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
 	"path/filepath"
-
+	"os"
+	"github.com/turbot/steampipe/workspace"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/turbot/go-kit/helpers"
@@ -63,8 +63,15 @@ func runQueryCmd(cmd *cobra.Command, args []string) {
 		}
 	}()
 
+	// load the workspace
+	workingDirectory, err := os.Getwd()
+	utils.FailOnError(err)
+	workspace, err := workspace.Load(workingDirectory)
+	utils.FailOnError(err)
+
+	
 	// gety query or queries from the args
-	queries, err := getQueries(args)
+	queries, err := getQueries(args, workspace)
 	utils.FailOnError(err)
 
 	for _, q := range queries {
@@ -73,7 +80,7 @@ func runQueryCmd(cmd *cobra.Command, args []string) {
 }
 
 // retrieve queries from args or determine whether to run the interactive shell
-func getQueries(args []string) ([]string, error) {
+func getQueries(args []string, workspace *workspace.Workspace) ([]string, error) {
 	// was the sql-file flag used?
 	if sqlFiles := viper.GetStringSlice(constants.ArgSqlFile); len(sqlFiles) > 0 {
 		// cobra only takes the first string after a flag as the flag value, so if more than one file is specified,
@@ -91,7 +98,11 @@ func getQueries(args []string) ([]string, error) {
 	// if no query is specified in the args, we must pass a single empty query to trigger interactive mode
 	var query = ""
 	if len(args) > 0 {
-		query = args[0]
+		if namedQuery, ok := workspace.GetNamedQuery(args[0]); ok {
+			query = namedQuery.SQL
+		} else {
+			query = args[0]
+		}
 	}
 	return []string{query}, nil
 }
@@ -102,7 +113,7 @@ func runQuery(queryString string) {
 	cmdconfig.Viper().Set(constants.ShowInteractiveOutputConfigKey, showSpinner)
 
 	// the db executor sends result data over resultsStreamer
-	resultsStreamer, err := db.ExecuteQuery(queryString)
+	resultsStreamer, err := db.ExecuteQuery(queryString, workspace)
 	utils.FailOnError(err)
 
 	// print the data as it comes
