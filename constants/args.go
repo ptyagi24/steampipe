@@ -6,8 +6,6 @@ const (
 	ArgCSV                     = "csv"
 	ArgTable                   = "table"
 	ArgLine                    = "line"
-	ArgListAllTableNames       = "L"
-	ArgSelectAll               = "A"
 	ArgForce                   = "force"
 	ArgTimer                   = "timing"
 	ArgOn                      = "on"
@@ -16,12 +14,15 @@ const (
 	ArgPort                    = "database-port"
 	ArgListenAddressDeprecated = "listen"
 	ArgListenAddress           = "database-listen"
+	ArgSearchPath              = "search-path"
+	ArgSearchPathPrefix        = "search-path-prefix"
 	ArgInvoker                 = "invoker"
 	ArgRefresh                 = "refresh"
 	ArgLogLevel                = "log-level"
 	ArgUpdateCheck             = "update-check"
 	ArgInstallDir              = "install-dir"
 	ArgSqlFile                 = "sql-file"
+	ArgWorkspace               = "workspace"
 )
 
 /// metaquery mode arguments
