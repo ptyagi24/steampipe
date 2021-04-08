@@ -297,6 +297,5 @@ func iterateResults(result *results.QueryResult, displayResult displayResultsFun
 		}
 		displayResult(row.Data, result)
 	}
-	// we will not get here
 	return nil
 }

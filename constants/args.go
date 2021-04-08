@@ -2,6 +2,7 @@ package constants
 
 // Argument name constants
 const (
+	ArgHTML                    = "html"
 	ArgJSON                    = "json"
 	ArgCSV                     = "csv"
 	ArgTable                   = "table"
@@ -22,6 +23,7 @@ const (
 	ArgUpdateCheck             = "update-check"
 	ArgInstallDir              = "install-dir"
 	ArgSqlFile                 = "sql-file"
+	ArgOutputDir               = "output-dir"
 )
 
 /// metaquery mode arguments
