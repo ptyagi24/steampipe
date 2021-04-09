@@ -2,20 +2,20 @@ package control
 
 import (
 	"encoding/json"
-	"fmt"
+
 	"github.com/turbot/steampipe/constants"
 )
 
-func FormatControl(controls []ControlRun, format string) []byte {
-	if format == constants.ArgJSON {
-		return formatJSON(controls)
+func formatResults(controlPack ControlPack, format string) []byte {
+	switch format {
+	case constants.ArgJSON:
+		return formatJSON(controlPack)
+	default:
+		return nil
 	}
-	return nil
-
 }
 
-func formatJSON(controls []ControlRun) []byte {
-	res, _ := json.MarshalIndent(controls, "", "  ")
-	fmt.Println(string(res))
+func formatJSON(controlPack ControlPack) []byte {
+	res, _ := json.MarshalIndent(controlPack, "", "  ")
 	return res
 }

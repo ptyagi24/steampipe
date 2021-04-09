@@ -3,6 +3,7 @@ package control
 import (
 	"bytes"
 	"fmt"
+	"sync"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
@@ -31,7 +32,13 @@ func getControlStatusText(status string, options ControlReportingOptions) string
 	}
 }
 
-func displayControlsTable(controlPack []ControlRun, options ControlReportingOptions) {
+func displayControlResults(controlPack ControlPack, reportingOptions ControlReportingOptions, wg *sync.WaitGroup) {
+	defer wg.Done()
+	displayControlsTable(controlPack, reportingOptions)
+	displayControlStatusesTable(controlPack, reportingOptions)
+}
+
+func displayControlsTable(controlPack ControlPack, options ControlReportingOptions) {
 	// the buffer to put the output data in
 	outbuf := bytes.NewBufferString("")
 
@@ -73,7 +80,7 @@ func displayControlsTable(controlPack []ControlRun, options ControlReportingOpti
 	t.SetColumnConfigs(colConfigs)
 	t.AppendHeader(headers)
 
-	for _, control := range controlPack {
+	for _, control := range controlPack.ControlRuns {
 		for _, result := range control.Results {
 			row := table.Row{
 				getControlStatusText(result.Status, options),
@@ -92,7 +99,7 @@ func displayControlsTable(controlPack []ControlRun, options ControlReportingOpti
 	fmt.Println("")
 }
 
-func displayControlStatusesTable(controlPack []ControlRun, options ControlReportingOptions) {
+func displayControlStatusesTable(controlPack ControlPack, options ControlReportingOptions) {
 	// the buffer to put the output data in
 	outbuf := bytes.NewBufferString("")
 
@@ -128,7 +135,7 @@ func displayControlStatusesTable(controlPack []ControlRun, options ControlReport
 	skippedTotal := 0
 	totalControls := 0
 
-	for _, control := range controlPack {
+	for _, control := range controlPack.ControlRuns {
 		for _, result := range control.Results {
 			totalControls += 1
 			switch result.Status {
