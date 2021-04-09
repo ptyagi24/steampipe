@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -52,8 +51,6 @@ connection from any Postgres compatible database client.`,
 }
 
 func runControlRunCmd(cmd *cobra.Command, args []string) {
-	fmt.Println("Running control...")
-
 	output := cmdconfig.Viper().GetString(constants.ArgOutput)
 	outputDir := cmdconfig.Viper().GetString(constants.ArgOutputDir)
 	noColor := cmdconfig.Viper().GetBool(constants.ArgNoColor)

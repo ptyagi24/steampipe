@@ -20,6 +20,8 @@ func getControlStatusText(status string, options ControlReportingOptions) string
 
 	switch status {
 	case ControlAlarm:
+		fallthrough
+	case ControlError:
 		return text.FgRed.Sprint(status)
 	case ControlOK:
 		return text.FgGreen.Sprint(status)
@@ -130,6 +132,7 @@ func displayControlStatusesTable(controlPack ControlPack, options ControlReporti
 	t.AppendHeader(headers)
 
 	alarmTotal := 0
+	errorTotal := 0
 	okTotal := 0
 	infoTotal := 0
 	skippedTotal := 0
@@ -141,6 +144,8 @@ func displayControlStatusesTable(controlPack ControlPack, options ControlReporti
 			switch result.Status {
 			case ControlAlarm:
 				alarmTotal += 1
+			case ControlError:
+				errorTotal += 1
 			case ControlInfo:
 				infoTotal += 1
 			case ControlOK:
@@ -155,6 +160,10 @@ func displayControlStatusesTable(controlPack ControlPack, options ControlReporti
 		getControlStatusText(ControlAlarm, options),
 		alarmTotal,
 	}
+	errorRow := table.Row{
+		getControlStatusText(ControlError, options),
+		errorTotal,
+	}
 	okRow := table.Row{
 		getControlStatusText(ControlOK, options),
 		okTotal,
@@ -167,6 +176,7 @@ func displayControlStatusesTable(controlPack ControlPack, options ControlReporti
 		getControlStatusText(ControlSkipped, options),
 		skippedTotal,
 	}
+	t.AppendRow(errorRow)
 	t.AppendRow(alarmRow)
 	t.AppendRow(okRow)
 	t.AppendRow(infoRow)

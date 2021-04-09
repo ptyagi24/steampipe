@@ -30,13 +30,11 @@ func getFileName(controlPack ControlPack, format string) string {
 }
 
 func outputResults(controlPack ControlPack, format string, outputDir string, wg *sync.WaitGroup) {
-	fmt.Println(outputDir)
 	defer wg.Done()
 	formattedResults := formatResults(controlPack, format)
 	ensureOutputDirExists(outputDir)
 	filePath := path.Join(outputDir, getFileName(controlPack, format))
 	// TODO what file perms?
-	err := ioutil.WriteFile(filePath, formattedResults, 0777)
 	// TODO what to do with file error?
-	fmt.Println(err)
+	_ = ioutil.WriteFile(filePath, formattedResults, 0777)
 }

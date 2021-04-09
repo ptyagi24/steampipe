@@ -1,6 +1,7 @@
 package control
 
 import (
+	"github.com/turbot/steampipe/utils"
 	"sync"
 	"time"
 )
@@ -36,6 +37,7 @@ type ControlPack struct {
 
 const (
 	ControlAlarm   = "alarm"
+	ControlError   = "error"
 	ControlInfo    = "info"
 	ControlOK      = "ok"
 	ControlSkipped = "skipped"
@@ -49,10 +51,13 @@ func getPluralisedControlsText(count int) string {
 }
 
 func RunControl(reportingOptions ControlReportingOptions) {
+	spinner := utils.ShowSpinner("Running controls")
 	// TODO how do I actually get this? Simulate it coming from a channel for now
 	controlChan := make(chan ControlPack)
 	go runControls(controlChan)
 	controlPack := <-controlChan
+
+	utils.StopSpinner(spinner)
 
 	// Generate output formats in parallel
 	var wg sync.WaitGroup
