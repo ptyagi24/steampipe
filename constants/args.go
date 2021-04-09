@@ -21,6 +21,8 @@ const (
 	ArgLogLevel                = "log-level"
 	ArgUpdateCheck             = "update-check"
 	ArgInstallDir              = "install-dir"
+	ArgSearchPath              = "search-path"
+	ArgSearchPathPrefix        = "search-path-prefix"
 )
 
 /// metaquery mode arguments
