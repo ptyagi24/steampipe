@@ -9,6 +9,7 @@ type ControlReportingOptions struct {
 	OutputDirectory string
 	OutputFormats   []string
 	WithColor       bool
+	WithProgress    bool
 }
 
 type ControlType struct {
@@ -18,7 +19,6 @@ type ControlType struct {
 }
 
 type ControlResult struct {
-	Error    error
 	Status   string `json:"status"`
 	Reason   string `json:"reason"`
 	Resource string `json:"resource"`

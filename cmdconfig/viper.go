@@ -15,7 +15,6 @@ func InitViper() {
 	v := viper.GetViper()
 	// set defaults
 	v.Set(constants.ShowInteractiveOutputConfigKey, true)
-	v.Set(constants.ArgOutputDir, "./control-runs")
 
 	if installDir, isSet := os.LookupEnv("STEAMPIPE_INSTALL_DIR"); isSet {
 		v.SetDefault(constants.ArgInstallDir, installDir)
@@ -39,6 +38,7 @@ func SetViperDefaults(config *steampipeconfig.SteampipeConfig) {
 func setBaseDefaults() {
 	defaults := map[string]interface{}{
 		constants.ArgUpdateCheck: true,
+		constants.ArgOutputDir:   "./results",
 	}
 
 	for k, v := range defaults {

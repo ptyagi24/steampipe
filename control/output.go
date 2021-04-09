@@ -30,6 +30,7 @@ func getFileName(controlPack ControlPack, format string) string {
 }
 
 func outputResults(controlPack ControlPack, format string, outputDir string, wg *sync.WaitGroup) {
+	fmt.Println(outputDir)
 	defer wg.Done()
 	formattedResults := formatResults(controlPack, format)
 	ensureOutputDirExists(outputDir)

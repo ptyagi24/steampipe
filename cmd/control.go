@@ -45,7 +45,8 @@ connection from any Postgres compatible database client.`,
 		OnCmd(cmd).
 		AddStringFlag(constants.ArgOutput, "", "", "The format(s) to output the report to. Must be one or more of csv, html or json in a comma-separated list", cmdconfig.FlagOptions.Required()).
 		AddStringFlag(constants.ArgOutputDir, "", "", "The directory to output the control results to. Defaults to ./control-runs.").
-		AddBoolFlag(constants.ArgNoColor, "", false, "Remove color from the terminal output.")
+		AddBoolFlag(constants.ArgNoColor, "", false, "Do not add color to outputs in the terminal output.").
+		AddBoolFlag(constants.ArgNoProgress, "", false, "Do not show progress of the operation in the terminal output.")
 
 	return cmd
 }
@@ -53,14 +54,16 @@ connection from any Postgres compatible database client.`,
 func runControlRunCmd(cmd *cobra.Command, args []string) {
 	fmt.Println("Running control...")
 
-	output := cmdconfig.Viper().GetString("output")
-	outputDir := cmdconfig.Viper().GetString("output-dir")
-	noColor := cmdconfig.Viper().GetBool("no-color")
+	output := cmdconfig.Viper().GetString(constants.ArgOutput)
+	outputDir := cmdconfig.Viper().GetString(constants.ArgOutputDir)
+	noColor := cmdconfig.Viper().GetBool(constants.ArgNoColor)
+	noProgress := cmdconfig.Viper().GetBool(constants.ArgNoProgress)
 
 	reportingOptions := control.ControlReportingOptions{
 		OutputFormats:   strings.Split(output, ","),
 		OutputDirectory: outputDir,
 		WithColor:       !noColor,
+		WithProgress:    !noProgress,
 	}
 
 	control.RunControl(reportingOptions)

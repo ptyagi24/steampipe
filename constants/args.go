@@ -24,6 +24,7 @@ const (
 	ArgInstallDir              = "install-dir"
 	ArgSqlFile                 = "sql-file"
 	ArgNoColor                 = "no-color"
+	ArgNoProgress              = "no-progress"
 	ArgOutputDir               = "output-dir"
 )
 
