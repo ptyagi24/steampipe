@@ -2,15 +2,16 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/turbot/steampipe/control"
+	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/turbot/steampipe/cmdconfig"
 	"github.com/turbot/steampipe/constants"
+	"github.com/turbot/steampipe/control"
 )
 
-// ServiceCmd :: Service management commands
+// ControlCmd :: Steampipe control management
 func ControlCmd() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "control [command]",
@@ -42,8 +43,9 @@ connection from any Postgres compatible database client.`,
 
 	cmdconfig.
 		OnCmd(cmd).
-		AddStringFlag(constants.ArgOutput, "", constants.ArgOutput, "The format(s) to output the report to. Must be one or more of csv, html or json in a comma-separated list").
-		AddStringFlag(constants.ArgOutputDir, "", constants.ArgJSON, "The directory to output the control results to. Defaults to ./control-runs.")
+		AddStringFlag(constants.ArgOutput, "", "", "The format(s) to output the report to. Must be one or more of csv, html or json in a comma-separated list", cmdconfig.FlagOptions.Required()).
+		AddStringFlag(constants.ArgOutputDir, "", "", "The directory to output the control results to. Defaults to ./control-runs.").
+		AddBoolFlag(constants.ArgNoColor, "", false, "Remove color from the terminal output.")
 
 	return cmd
 }
@@ -53,6 +55,13 @@ func runControlRunCmd(cmd *cobra.Command, args []string) {
 
 	output := cmdconfig.Viper().GetString("output")
 	outputDir := cmdconfig.Viper().GetString("output-dir")
+	noColor := cmdconfig.Viper().GetBool("no-color")
 
-	control.RunControl(output, outputDir)
+	reportingOptions := control.ControlReportingOptions{
+		OutputFormats:   strings.Split(output, ","),
+		OutputDirectory: outputDir,
+		WithColor:       !noColor,
+	}
+
+	control.RunControl(reportingOptions)
 }

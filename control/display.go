@@ -11,7 +11,12 @@ import (
 	"github.com/turbot/steampipe/display"
 )
 
-func getControlStatusText(status string) string {
+func getControlStatusText(status string, options ControlReportingOptions) string {
+	// Don't add color if the user has opted out
+	if !options.WithColor {
+		return status
+	}
+
 	switch status {
 	case ControlAlarm:
 		return text.FgRed.Sprint(status)
@@ -26,7 +31,7 @@ func getControlStatusText(status string) string {
 	}
 }
 
-func displayControlsTable(controlPack []ControlRun) {
+func displayControlsTable(controlPack []ControlRun, options ControlReportingOptions) {
 	// the buffer to put the output data in
 	outbuf := bytes.NewBufferString("")
 
@@ -71,7 +76,7 @@ func displayControlsTable(controlPack []ControlRun) {
 	for _, control := range controlPack {
 		for _, result := range control.Results {
 			row := table.Row{
-				getControlStatusText(result.Status),
+				getControlStatusText(result.Status, options),
 				control.Type.ControlID,
 				control.Type.Title,
 				control.Type.Description,
@@ -87,7 +92,7 @@ func displayControlsTable(controlPack []ControlRun) {
 	fmt.Println("")
 }
 
-func displayControlStatusesTable(controlPack []ControlRun) {
+func displayControlStatusesTable(controlPack []ControlRun, options ControlReportingOptions) {
 	// the buffer to put the output data in
 	outbuf := bytes.NewBufferString("")
 
@@ -140,19 +145,19 @@ func displayControlStatusesTable(controlPack []ControlRun) {
 	}
 
 	alarmRow := table.Row{
-		getControlStatusText(ControlAlarm),
+		getControlStatusText(ControlAlarm, options),
 		alarmTotal,
 	}
 	okRow := table.Row{
-		getControlStatusText(ControlOK),
+		getControlStatusText(ControlOK, options),
 		okTotal,
 	}
 	infoRow := table.Row{
-		getControlStatusText(ControlInfo),
+		getControlStatusText(ControlInfo, options),
 		infoTotal,
 	}
 	skippedRow := table.Row{
-		getControlStatusText(ControlSkipped),
+		getControlStatusText(ControlSkipped, options),
 		skippedTotal,
 	}
 	t.AppendRow(alarmRow)

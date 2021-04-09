@@ -1,5 +1,13 @@
 package control
 
+import "fmt"
+
+type ControlReportingOptions struct {
+	OutputDirectory string
+	OutputFormats   []string
+	WithColor       bool
+}
+
 type ControlType struct {
 	ControlID   string `json:"control_id"`
 	Title       string `json:"title"`
@@ -32,10 +40,33 @@ func getPluralisedControlsText(count int) string {
 	return "controls"
 }
 
-func RunControl(output string, outputDir string) {
-	//fmt.Println("format", format)
-	//fmt.Println("output-dir", outputDir)
+func RunControl(reportingOptions ControlReportingOptions) {
+	fmt.Println(reportingOptions)
 
+	controlChan := make(chan []ControlRun)
+
+	go runControls(controlChan)
+
+	controlPack := <-controlChan
+
+	displayControlsTable(controlPack, reportingOptions)
+	displayControlStatusesTable(controlPack, reportingOptions)
+
+	//totalAlarm := 1
+	//totalOK := 2
+	//
+	//fmt.Println("Control results")
+	//fmt.Println("")
+	//fmt.Println(text.FgRed.Sprintf("%d %s in alarm", totalAlarm, getPluralisedControlsText(totalAlarm)))
+	//fmt.Println(text.FgGreen.Sprintf("%d %s in OK", totalOK, getPluralisedControlsText(totalOK)))
+
+	//fmt.Println(controls)
+
+	//formattedOutput := FormatControl(controls, format)
+	//fmt.Println(formattedOutput)
+}
+
+func runControls(stream chan []ControlRun) {
 	controlPack := []ControlRun{
 		{Type: ControlType{
 			ControlID:   "aws.cis.v130.1.1",
@@ -72,19 +103,5 @@ func RunControl(output string, outputDir string) {
 		}},
 	}
 
-	displayControlsTable(controlPack)
-	displayControlStatusesTable(controlPack)
-
-	//totalAlarm := 1
-	//totalOK := 2
-	//
-	//fmt.Println("Control results")
-	//fmt.Println("")
-	//fmt.Println(text.FgRed.Sprintf("%d %s in alarm", totalAlarm, getPluralisedControlsText(totalAlarm)))
-	//fmt.Println(text.FgGreen.Sprintf("%d %s in OK", totalOK, getPluralisedControlsText(totalOK)))
-
-	//fmt.Println(controls)
-
-	//formattedOutput := FormatControl(controls, format)
-	//fmt.Println(formattedOutput)
+	stream <- controlPack
 }

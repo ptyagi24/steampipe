@@ -23,6 +23,7 @@ const (
 	ArgUpdateCheck             = "update-check"
 	ArgInstallDir              = "install-dir"
 	ArgSqlFile                 = "sql-file"
+	ArgNoColor                 = "no-color"
 	ArgOutputDir               = "output-dir"
 )
 
