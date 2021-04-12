@@ -4,7 +4,7 @@ MAINTAINER Steampipe www.steampipe.io
 
 COPY $GITHUB_WORKSPACE / 
 
-RUN tar -xf /linux.tar.gz -C /usr/local/bin/steampipe
+RUN /bin/bash /install.sh
 
 ENTRYPOINT [ "/usr/local/bin/steampipe" ]
 

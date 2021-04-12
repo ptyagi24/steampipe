@@ -112,7 +112,6 @@ jobs:
         run: |
           echo $GITHUB_WORKSPACE
           ls -l $GITHUB_WORKSPACE
-          ls -l ~/artifacts
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
