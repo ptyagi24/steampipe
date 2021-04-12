@@ -119,8 +119,8 @@ jobs:
         with:
           context: ./
           file: ./dockerfile
-          repository: tyagiparth/steampipe
-          tag_with_ref: true
+          push: true
+          tags: tyagiparth/steampipe:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
