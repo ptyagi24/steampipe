@@ -120,7 +120,7 @@ jobs:
           context: ./
           file: ./dockerfile
           push: true
-          tags: tyagiparth/steampipe:latest
+          tags: tyagiparth/steampipe:${{ github.event.inputs.tag }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
