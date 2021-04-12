@@ -1,13 +1,8 @@
 name: Steampipe Release
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'The branch that will be built'
-        required: true
-      tag:
-        description: 'The release tag that will be set'
-        required: true
+  push:
+    tags:
+      - "v*"
 
 env:
   STEAMPIPE_UPDATE_CHECK: false
@@ -16,7 +11,7 @@ jobs:
   goreleaser:
     name: Build
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -70,10 +65,9 @@ jobs:
     needs: goreleaser
     strategy:
       matrix:
-        platform: [ ubuntu-latest ]
+        platform: [ubuntu-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -168,6 +162,27 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish_docker_image:
+    name: Push Docker image to Docker Hub
+    needs: create_release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Download Linux Build Artifacts
+        uses: actions/download-artifact@v2
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        with:
+          name: build-artifact-linux
+          path: ~/artifacts
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: tyagiparth/steampipe
+          tag_with_ref: true
 
   clean_up:
     # let's clean up the artifacts.
