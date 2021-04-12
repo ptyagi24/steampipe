@@ -1,8 +1,13 @@
 name: Steampipe Release
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "The branch that will be built"
+        required: true
+      tag:
+        description: "The release tag that will be set"
+        required: true
 
 env:
   STEAMPIPE_UPDATE_CHECK: false
