@@ -8,9 +8,9 @@ RUN apt-get update && \
 
 COPY $GITHUB_WORKSPACE / 
 
-USER steampipe
-
 RUN /bin/bash /install.sh
+
+USER steampipe
 
 ENTRYPOINT [ "/usr/local/bin/steampipe" ]
 
