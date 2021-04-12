@@ -129,7 +129,7 @@ jobs:
     # refer:
     #   https://docs.github.com/en/actions/configuring-and-managing-workflows/persisting-workflow-data-using-artifacts#downloading-and-deleting-artifacts-after-a-workflow-run-is-complete
     name: Clean Up Artifacts
-    needs: create_release
+    needs: [create_release, publish_docker_image]
     runs-on: ubuntu-latest
     steps:
       - name: Clean up Linux Build
