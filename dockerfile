@@ -13,5 +13,3 @@ RUN /bin/bash /install.sh
 USER steampipe
 
 ENTRYPOINT [ "/usr/local/bin/steampipe" ]
-
-CMD ["query"]
