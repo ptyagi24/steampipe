@@ -111,18 +111,15 @@ jobs:
       - name: Prepare for downloads
         id: prepare-for-downloads
         run: |
-          mkdir ~/artifacts
-          cd ~/artifacts
-          pwd
+          mkdir $GITHUB_WORKSPACE/artifacts
       - name: Download Linux Build Artifacts
         uses: actions/download-artifact@v2
         with:
           name: build-artifact-linux
-          path: ~/artifacts
+          path: $GITHUB_WORKSPACE/artifacts
       - name: Location of files
         run: |
-          pwd
-          ls -l ~/artifacts
+          ls -l $GITHUB_WORKSPACE/artifacts
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
