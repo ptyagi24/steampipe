@@ -113,7 +113,7 @@ jobs:
         run: |
           mkdir ~/artifacts
           cd ~/artifacts
-          echo pwd
+          pwd
       - name: Download Linux Build Artifacts
         uses: actions/download-artifact@v2
         with:
@@ -121,8 +121,8 @@ jobs:
           path: ~/artifacts
       - name: Location of files
         run: |
-          echo pwd
-          echo ls -a
+          pwd
+          ls -l ~/artifacts
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
