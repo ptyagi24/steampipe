@@ -12,4 +12,8 @@ RUN /bin/bash /install.sh
 
 USER steampipe
 
+WORKDIR /home/steampipe
+
+RUN steampipe plugin install steampipe
+
 ENTRYPOINT [ "/usr/local/bin/steampipe" ]
