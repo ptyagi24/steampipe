@@ -103,24 +103,38 @@ jobs:
 
   publish_docker_image:
     name: Push Docker image to Docker Hub
-    needs: create_release
+    needs: [goreleaser, create_release]
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+      - name: Prepare for downloads
+        id: prepare-for-downloads
+        run: |
+          echo $GITHUB_WORKSPACE
       - name: Download Linux Build Artifacts
         uses: actions/download-artifact@v2
-        if: ${{ matrix.platform == 'ubuntu-latest' }}
         with:
           name: build-artifact-linux
-          path: ~/artifacts
-      - name: Push to Docker Hub
-        uses: docker/build-push-action@v2
+          path: /home/runner/work/steampipe/steampipe
+      - name: Location of files
+        run: |
+          ls -la $GITHUB_WORKSPACE
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: tyagiparth/steampipe
-          tag_with_ref: true
+      - name: Push to Docker Hub
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./dockerfile
+          push: true
+          tags: tyagiparth/steampipe:${{ github.event.inputs.tag }}
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
 
   clean_up:
     # let's clean up the artifacts.
@@ -129,7 +143,7 @@ jobs:
     # refer:
     #   https://docs.github.com/en/actions/configuring-and-managing-workflows/persisting-workflow-data-using-artifacts#downloading-and-deleting-artifacts-after-a-workflow-run-is-complete
     name: Clean Up Artifacts
-    needs: create_release
+    needs: [create_release, publish_docker_image]
     runs-on: ubuntu-latest
     steps:
       - name: Clean up Linux Build
