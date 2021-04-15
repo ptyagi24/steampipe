@@ -1,6 +1,4 @@
-FROM ubuntu:latest
-
-MAINTAINER Steampipe www.steampipe.io
+FROM ubuntu:20.04
 
 RUN apt-get update && \
     apt-get install -y curl && \
@@ -8,7 +6,7 @@ RUN apt-get update && \
 
 COPY $GITHUB_WORKSPACE / 
 
-RUN /bin/bash /install.sh
+RUN tar -xf /linux.tar.gz -C /usr/local/bin
 
 USER steampipe
 
